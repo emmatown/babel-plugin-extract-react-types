@@ -22,27 +22,32 @@ module.exports = babel => {
             let node = path.get(`body.${i}`);
             if (node.isExportDeclaration()) {
               let declaration = node.get("declaration");
-              let converted;
-              if (isReactComponentClass(declaration)) {
-                converted = convertReactComponentClass(declaration, context);
-              } else if (isReactComponentFunction(declaration)) {
-                converted = convertReactComponentFunction(declaration, context);
-              }
-              // todo this might break for unnamed default exports
-              if (converted && converted.name && converted.name.name) {
-                path.node.body.push(
-                  t.expressionStatement(
-                    t.assignmentExpression(
-                      "=",
-                      t.memberExpression(
-                        t.identifier(converted.name.name),
-                        t.identifier("___types")
-                      ),
-                      parseExpression(JSON.stringify(converted))
+              try {
+                let converted;
+                if (isReactComponentClass(declaration)) {
+                  converted = convertReactComponentClass(declaration, context);
+                } else if (isReactComponentFunction(declaration)) {
+                  converted = convertReactComponentFunction(
+                    declaration,
+                    context
+                  );
+                }
+                // todo this might break for unnamed default exports
+                if (converted && converted.name && converted.name.name) {
+                  path.node.body.push(
+                    t.expressionStatement(
+                      t.assignmentExpression(
+                        "=",
+                        t.memberExpression(
+                          t.identifier(converted.name.name),
+                          t.identifier("___types")
+                        ),
+                        parseExpression(JSON.stringify(converted))
+                      )
                     )
-                  )
-                );
-              }
+                  );
+                }
+              } catch (e) {}
             }
           }
         }
