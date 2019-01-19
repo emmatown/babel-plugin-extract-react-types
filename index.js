@@ -29,7 +29,7 @@ module.exports = babel => {
                 converted = convertReactComponentFunction(declaration, context);
               }
               // todo this might break for unnamed default exports
-              if (converted) {
+              if (converted && converted.name && converted.name.name) {
                 path.node.body.push(
                   t.expressionStatement(
                     t.assignmentExpression(
