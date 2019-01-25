@@ -1,56 +1,38 @@
 const { parseExpression } = require("@babel/parser");
-const { isReactComponentClass } = require("babel-react-components");
 
-const {
-  getContext,
-  isReactComponentFunction,
-  convertReactComponentClass,
-  convertReactComponentFunction
-} = require("./extract-react-types");
-
-// parseExpression(JSON.stringify());
+const { findExportedComponents } = require("./extract-react-types");
 
 module.exports = babel => {
   let t = babel.types;
 
   return {
     visitor: {
-      Program: {
-        enter(path, state) {
-          const context = getContext("flow", state.file.filename);
-          for (let i = 0; i < path.node.body.length; i++) {
-            let node = path.get(`body.${i}`);
-            if (node.isExportDeclaration()) {
-              let declaration = node.get("declaration");
-              try {
-                let converted;
-                if (isReactComponentClass(declaration)) {
-                  converted = convertReactComponentClass(declaration, context);
-                } else if (isReactComponentFunction(declaration)) {
-                  converted = convertReactComponentFunction(
-                    declaration,
-                    context
-                  );
-                }
-                // todo this might break for unnamed default exports
-                if (converted && converted.name && converted.name.name) {
-                  path.node.body.push(
-                    t.expressionStatement(
-                      t.assignmentExpression(
-                        "=",
-                        t.memberExpression(
-                          t.identifier(converted.name.name),
-                          t.identifier("___types")
-                        ),
-                        parseExpression(JSON.stringify(converted))
-                      )
-                    )
-                  );
-                }
-              } catch (e) {}
-            }
+      Program(programPath, state) {
+        let components = findExportedComponents(
+          programPath,
+          "flow",
+          state.file.filename
+        );
+        components.forEach(({ name, component }) => {
+          // TODO: handle when name is null
+          // it will only happen when it's the default export
+          // generate something like this
+          // export default (var someName = function() {}, someName.___types = theTypes, someName)
+          if (name !== null) {
+            programPath.node.body.push(
+              t.expressionStatement(
+                t.assignmentExpression(
+                  "=",
+                  t.memberExpression(
+                    t.identifier(name),
+                    t.identifier("___types")
+                  ),
+                  parseExpression(JSON.stringify(component))
+                )
+              )
+            );
           }
-        }
+        });
       }
     }
   };

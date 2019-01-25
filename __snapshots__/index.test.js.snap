@@ -1,0 +1,649 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`flow React.memo 1`] = `
+"export const SomeComponent = React.memo(props => {
+  return null;
+});
+SomeComponent.___types = {
+  \\"kind\\": \\"generic\\",
+  \\"value\\": {
+    \\"kind\\": \\"object\\",
+    \\"members\\": [{
+      \\"kind\\": \\"property\\",
+      \\"key\\": {
+        \\"kind\\": \\"id\\",
+        \\"name\\": \\"wow\\"
+      },
+      \\"value\\": {
+        \\"kind\\": \\"boolean\\"
+      },
+      \\"optional\\": false,
+      \\"leadingComments\\": [{
+        \\"type\\": \\"commentBlock\\",
+        \\"value\\": \\"this does something\\",
+        \\"raw\\": \\"* this does something \\"
+      }]
+    }],
+    \\"leadingComments\\": [{
+      \\"type\\": \\"commentLine\\",
+      \\"value\\": \\"@flow\\",
+      \\"raw\\": \\" @flow\\"
+    }],
+    \\"referenceIdName\\": \\"Props\\"
+  },
+  \\"name\\": {
+    \\"kind\\": \\"id\\",
+    \\"name\\": \\"SomeComponent\\",
+    \\"type\\": null
+  }
+};"
+`;
+
+exports[`flow arrow function 1`] = `
+"export const SomeComponent = props => {
+  return null;
+};
+SomeComponent.___types = {
+  \\"kind\\": \\"generic\\",
+  \\"value\\": {
+    \\"kind\\": \\"object\\",
+    \\"members\\": [{
+      \\"kind\\": \\"property\\",
+      \\"key\\": {
+        \\"kind\\": \\"id\\",
+        \\"name\\": \\"wow\\"
+      },
+      \\"value\\": {
+        \\"kind\\": \\"boolean\\"
+      },
+      \\"optional\\": false,
+      \\"leadingComments\\": [{
+        \\"type\\": \\"commentBlock\\",
+        \\"value\\": \\"this does something\\",
+        \\"raw\\": \\"* this does something \\"
+      }]
+    }],
+    \\"leadingComments\\": [{
+      \\"type\\": \\"commentLine\\",
+      \\"value\\": \\"@flow\\",
+      \\"raw\\": \\" @flow\\"
+    }],
+    \\"referenceIdName\\": \\"Props\\"
+  },
+  \\"name\\": {
+    \\"kind\\": \\"id\\",
+    \\"name\\": \\"SomeComponent\\",
+    \\"type\\": null
+  }
+};"
+`;
+
+exports[`flow arrow function export default identifier 1`] = `
+"const SomeComponent = props => {
+  return null;
+};
+
+export default SomeComponent;
+SomeComponent.___types = {
+  \\"kind\\": \\"generic\\",
+  \\"value\\": {
+    \\"kind\\": \\"object\\",
+    \\"members\\": [{
+      \\"kind\\": \\"property\\",
+      \\"key\\": {
+        \\"kind\\": \\"id\\",
+        \\"name\\": \\"wow\\"
+      },
+      \\"value\\": {
+        \\"kind\\": \\"boolean\\"
+      },
+      \\"optional\\": false,
+      \\"leadingComments\\": [{
+        \\"type\\": \\"commentBlock\\",
+        \\"value\\": \\"this does something\\",
+        \\"raw\\": \\"* this does something \\"
+      }]
+    }],
+    \\"leadingComments\\": [{
+      \\"type\\": \\"commentLine\\",
+      \\"value\\": \\"@flow\\",
+      \\"raw\\": \\" @flow\\"
+    }],
+    \\"referenceIdName\\": \\"Props\\"
+  },
+  \\"name\\": {
+    \\"kind\\": \\"id\\",
+    \\"name\\": \\"SomeComponent\\",
+    \\"type\\": null
+  }
+};"
+`;
+
+exports[`flow arrow function then export 1`] = `
+"const SomeComponent = props => {
+  return null;
+};
+
+export { SomeComponent };
+SomeComponent.___types = {
+  \\"kind\\": \\"generic\\",
+  \\"value\\": {
+    \\"kind\\": \\"object\\",
+    \\"members\\": [{
+      \\"kind\\": \\"property\\",
+      \\"key\\": {
+        \\"kind\\": \\"id\\",
+        \\"name\\": \\"wow\\"
+      },
+      \\"value\\": {
+        \\"kind\\": \\"boolean\\"
+      },
+      \\"optional\\": false,
+      \\"leadingComments\\": [{
+        \\"type\\": \\"commentBlock\\",
+        \\"value\\": \\"this does something\\",
+        \\"raw\\": \\"* this does something \\"
+      }]
+    }],
+    \\"leadingComments\\": [{
+      \\"type\\": \\"commentLine\\",
+      \\"value\\": \\"@flow\\",
+      \\"raw\\": \\" @flow\\"
+    }],
+    \\"referenceIdName\\": \\"Props\\"
+  },
+  \\"name\\": {
+    \\"kind\\": \\"id\\",
+    \\"name\\": \\"SomeComponent\\",
+    \\"type\\": null
+  }
+};"
+`;
+
+exports[`flow class 1`] = `
+"export class SomeComponent extends React.Component {
+  render() {
+    return null;
+  }
+
+}
+SomeComponent.___types = {
+  \\"kind\\": \\"generic\\",
+  \\"value\\": {
+    \\"kind\\": \\"object\\",
+    \\"members\\": [{
+      \\"kind\\": \\"property\\",
+      \\"key\\": {
+        \\"kind\\": \\"id\\",
+        \\"name\\": \\"wow\\"
+      },
+      \\"value\\": {
+        \\"kind\\": \\"boolean\\"
+      },
+      \\"optional\\": false,
+      \\"leadingComments\\": [{
+        \\"type\\": \\"commentBlock\\",
+        \\"value\\": \\"this does something\\",
+        \\"raw\\": \\"* this does something \\"
+      }]
+    }],
+    \\"leadingComments\\": [{
+      \\"type\\": \\"commentLine\\",
+      \\"value\\": \\"@flow\\",
+      \\"raw\\": \\" @flow\\"
+    }],
+    \\"referenceIdName\\": \\"Props\\"
+  },
+  \\"name\\": {
+    \\"kind\\": \\"id\\",
+    \\"name\\": \\"SomeComponent\\",
+    \\"type\\": null
+  }
+};"
+`;
+
+exports[`flow class declaration export default identifier 1`] = `
+"class SomeComponent extends React.Component {
+  render() {
+    return null;
+  }
+
+}
+
+export default SomeComponent;
+SomeComponent.___types = {
+  \\"kind\\": \\"generic\\",
+  \\"value\\": {
+    \\"kind\\": \\"object\\",
+    \\"members\\": [{
+      \\"kind\\": \\"property\\",
+      \\"key\\": {
+        \\"kind\\": \\"id\\",
+        \\"name\\": \\"wow\\"
+      },
+      \\"value\\": {
+        \\"kind\\": \\"boolean\\"
+      },
+      \\"optional\\": false,
+      \\"leadingComments\\": [{
+        \\"type\\": \\"commentBlock\\",
+        \\"value\\": \\"this does something\\",
+        \\"raw\\": \\"* this does something \\"
+      }]
+    }],
+    \\"leadingComments\\": [{
+      \\"type\\": \\"commentLine\\",
+      \\"value\\": \\"@flow\\",
+      \\"raw\\": \\" @flow\\"
+    }],
+    \\"referenceIdName\\": \\"Props\\"
+  },
+  \\"name\\": {
+    \\"kind\\": \\"id\\",
+    \\"name\\": \\"SomeComponent\\",
+    \\"type\\": null
+  }
+};"
+`;
+
+exports[`flow class declaration then export 1`] = `
+"class SomeComponent extends React.Component {
+  render() {
+    return null;
+  }
+
+}
+
+export { SomeComponent };
+SomeComponent.___types = {
+  \\"kind\\": \\"generic\\",
+  \\"value\\": {
+    \\"kind\\": \\"object\\",
+    \\"members\\": [{
+      \\"kind\\": \\"property\\",
+      \\"key\\": {
+        \\"kind\\": \\"id\\",
+        \\"name\\": \\"wow\\"
+      },
+      \\"value\\": {
+        \\"kind\\": \\"boolean\\"
+      },
+      \\"optional\\": false,
+      \\"leadingComments\\": [{
+        \\"type\\": \\"commentBlock\\",
+        \\"value\\": \\"this does something\\",
+        \\"raw\\": \\"* this does something \\"
+      }]
+    }],
+    \\"leadingComments\\": [{
+      \\"type\\": \\"commentLine\\",
+      \\"value\\": \\"@flow\\",
+      \\"raw\\": \\" @flow\\"
+    }],
+    \\"referenceIdName\\": \\"Props\\"
+  },
+  \\"name\\": {
+    \\"kind\\": \\"id\\",
+    \\"name\\": \\"SomeComponent\\",
+    \\"type\\": null
+  }
+};"
+`;
+
+exports[`flow default class 1`] = `
+"export default class SomeComponent extends React.Component {
+  render() {
+    return null;
+  }
+
+}
+SomeComponent.___types = {
+  \\"kind\\": \\"generic\\",
+  \\"value\\": {
+    \\"kind\\": \\"object\\",
+    \\"members\\": [{
+      \\"kind\\": \\"property\\",
+      \\"key\\": {
+        \\"kind\\": \\"id\\",
+        \\"name\\": \\"wow\\"
+      },
+      \\"value\\": {
+        \\"kind\\": \\"boolean\\"
+      },
+      \\"optional\\": false,
+      \\"leadingComments\\": [{
+        \\"type\\": \\"commentBlock\\",
+        \\"value\\": \\"this does something\\",
+        \\"raw\\": \\"* this does something \\"
+      }]
+    }],
+    \\"leadingComments\\": [{
+      \\"type\\": \\"commentLine\\",
+      \\"value\\": \\"@flow\\",
+      \\"raw\\": \\" @flow\\"
+    }],
+    \\"referenceIdName\\": \\"Props\\"
+  },
+  \\"name\\": {
+    \\"kind\\": \\"id\\",
+    \\"name\\": \\"SomeComponent\\",
+    \\"type\\": null
+  }
+};"
+`;
+
+exports[`flow default function declaration 1`] = `
+"export default class SomeComponent extends React.Component {
+  render() {
+    return null;
+  }
+
+}
+SomeComponent.___types = {
+  \\"kind\\": \\"generic\\",
+  \\"value\\": {
+    \\"kind\\": \\"object\\",
+    \\"members\\": [{
+      \\"kind\\": \\"property\\",
+      \\"key\\": {
+        \\"kind\\": \\"id\\",
+        \\"name\\": \\"wow\\"
+      },
+      \\"value\\": {
+        \\"kind\\": \\"boolean\\"
+      },
+      \\"optional\\": false,
+      \\"leadingComments\\": [{
+        \\"type\\": \\"commentBlock\\",
+        \\"value\\": \\"this does something\\",
+        \\"raw\\": \\"* this does something \\"
+      }]
+    }],
+    \\"leadingComments\\": [{
+      \\"type\\": \\"commentLine\\",
+      \\"value\\": \\"@flow\\",
+      \\"raw\\": \\" @flow\\"
+    }],
+    \\"referenceIdName\\": \\"Props\\"
+  },
+  \\"name\\": {
+    \\"kind\\": \\"id\\",
+    \\"name\\": \\"SomeComponent\\",
+    \\"type\\": null
+  }
+};"
+`;
+
+exports[`flow export default function declaration 1`] = `
+"export default function SomeComponent(props) {
+  return null;
+}
+;
+SomeComponent.___types = {
+  \\"kind\\": \\"generic\\",
+  \\"value\\": {
+    \\"kind\\": \\"object\\",
+    \\"members\\": [{
+      \\"kind\\": \\"property\\",
+      \\"key\\": {
+        \\"kind\\": \\"id\\",
+        \\"name\\": \\"wow\\"
+      },
+      \\"value\\": {
+        \\"kind\\": \\"boolean\\"
+      },
+      \\"optional\\": false,
+      \\"leadingComments\\": [{
+        \\"type\\": \\"commentBlock\\",
+        \\"value\\": \\"this does something\\",
+        \\"raw\\": \\"* this does something \\"
+      }]
+    }],
+    \\"leadingComments\\": [{
+      \\"type\\": \\"commentLine\\",
+      \\"value\\": \\"@flow\\",
+      \\"raw\\": \\" @flow\\"
+    }],
+    \\"referenceIdName\\": \\"Props\\"
+  },
+  \\"name\\": {
+    \\"kind\\": \\"id\\",
+    \\"name\\": \\"SomeComponent\\",
+    \\"type\\": null
+  }
+};"
+`;
+
+exports[`flow forwardRef 1`] = `
+"export const SomeComponent = forwardRef(props => {
+  return null;
+});
+SomeComponent.___types = {
+  \\"kind\\": \\"generic\\",
+  \\"value\\": {
+    \\"kind\\": \\"object\\",
+    \\"members\\": [{
+      \\"kind\\": \\"property\\",
+      \\"key\\": {
+        \\"kind\\": \\"id\\",
+        \\"name\\": \\"wow\\"
+      },
+      \\"value\\": {
+        \\"kind\\": \\"boolean\\"
+      },
+      \\"optional\\": false,
+      \\"leadingComments\\": [{
+        \\"type\\": \\"commentBlock\\",
+        \\"value\\": \\"this does something\\",
+        \\"raw\\": \\"* this does something \\"
+      }]
+    }],
+    \\"leadingComments\\": [{
+      \\"type\\": \\"commentLine\\",
+      \\"value\\": \\"@flow\\",
+      \\"raw\\": \\" @flow\\"
+    }],
+    \\"referenceIdName\\": \\"Props\\"
+  },
+  \\"name\\": {
+    \\"kind\\": \\"id\\",
+    \\"name\\": \\"SomeComponent\\",
+    \\"type\\": null
+  }
+};"
+`;
+
+exports[`flow forwardRef function expression 1`] = `
+"export const SomeComponent = forwardRef(function (props) {
+  return null;
+});
+SomeComponent.___types = {
+  \\"kind\\": \\"generic\\",
+  \\"value\\": {
+    \\"kind\\": \\"object\\",
+    \\"members\\": [{
+      \\"kind\\": \\"property\\",
+      \\"key\\": {
+        \\"kind\\": \\"id\\",
+        \\"name\\": \\"wow\\"
+      },
+      \\"value\\": {
+        \\"kind\\": \\"boolean\\"
+      },
+      \\"optional\\": false,
+      \\"leadingComments\\": [{
+        \\"type\\": \\"commentBlock\\",
+        \\"value\\": \\"this does something\\",
+        \\"raw\\": \\"* this does something \\"
+      }]
+    }],
+    \\"leadingComments\\": [{
+      \\"type\\": \\"commentLine\\",
+      \\"value\\": \\"@flow\\",
+      \\"raw\\": \\" @flow\\"
+    }],
+    \\"referenceIdName\\": \\"Props\\"
+  },
+  \\"name\\": {
+    \\"kind\\": \\"id\\",
+    \\"name\\": \\"SomeComponent\\",
+    \\"type\\": null
+  }
+};"
+`;
+
+exports[`flow forwardRef memo arrow function 1`] = `
+"export const SomeComponent = memo(forwardRef(props => {
+  return null;
+}));
+SomeComponent.___types = {
+  \\"kind\\": \\"generic\\",
+  \\"value\\": {
+    \\"kind\\": \\"object\\",
+    \\"members\\": [{
+      \\"kind\\": \\"property\\",
+      \\"key\\": {
+        \\"kind\\": \\"id\\",
+        \\"name\\": \\"wow\\"
+      },
+      \\"value\\": {
+        \\"kind\\": \\"boolean\\"
+      },
+      \\"optional\\": false,
+      \\"leadingComments\\": [{
+        \\"type\\": \\"commentBlock\\",
+        \\"value\\": \\"this does something\\",
+        \\"raw\\": \\"* this does something \\"
+      }]
+    }],
+    \\"leadingComments\\": [{
+      \\"type\\": \\"commentLine\\",
+      \\"value\\": \\"@flow\\",
+      \\"raw\\": \\" @flow\\"
+    }],
+    \\"referenceIdName\\": \\"Props\\"
+  },
+  \\"name\\": {
+    \\"kind\\": \\"id\\",
+    \\"name\\": \\"SomeComponent\\",
+    \\"type\\": null
+  }
+};"
+`;
+
+exports[`flow forwardRef memo function expression 1`] = `
+"export const SomeComponent = memo(forwardRef(function (props) {
+  return null;
+}));
+SomeComponent.___types = {
+  \\"kind\\": \\"generic\\",
+  \\"value\\": {
+    \\"kind\\": \\"object\\",
+    \\"members\\": [{
+      \\"kind\\": \\"property\\",
+      \\"key\\": {
+        \\"kind\\": \\"id\\",
+        \\"name\\": \\"wow\\"
+      },
+      \\"value\\": {
+        \\"kind\\": \\"boolean\\"
+      },
+      \\"optional\\": false,
+      \\"leadingComments\\": [{
+        \\"type\\": \\"commentBlock\\",
+        \\"value\\": \\"this does something\\",
+        \\"raw\\": \\"* this does something \\"
+      }]
+    }],
+    \\"leadingComments\\": [{
+      \\"type\\": \\"commentLine\\",
+      \\"value\\": \\"@flow\\",
+      \\"raw\\": \\" @flow\\"
+    }],
+    \\"referenceIdName\\": \\"Props\\"
+  },
+  \\"name\\": {
+    \\"kind\\": \\"id\\",
+    \\"name\\": \\"SomeComponent\\",
+    \\"type\\": null
+  }
+};"
+`;
+
+exports[`flow function declaration 1`] = `
+"export function SomeComponent(props) {
+  return null;
+}
+SomeComponent.___types = {
+  \\"kind\\": \\"generic\\",
+  \\"value\\": {
+    \\"kind\\": \\"object\\",
+    \\"members\\": [{
+      \\"kind\\": \\"property\\",
+      \\"key\\": {
+        \\"kind\\": \\"id\\",
+        \\"name\\": \\"wow\\"
+      },
+      \\"value\\": {
+        \\"kind\\": \\"boolean\\"
+      },
+      \\"optional\\": false,
+      \\"leadingComments\\": [{
+        \\"type\\": \\"commentBlock\\",
+        \\"value\\": \\"this does something\\",
+        \\"raw\\": \\"* this does something \\"
+      }]
+    }],
+    \\"leadingComments\\": [{
+      \\"type\\": \\"commentLine\\",
+      \\"value\\": \\"@flow\\",
+      \\"raw\\": \\" @flow\\"
+    }],
+    \\"referenceIdName\\": \\"Props\\"
+  },
+  \\"name\\": {
+    \\"kind\\": \\"id\\",
+    \\"name\\": \\"SomeComponent\\",
+    \\"type\\": null
+  }
+};"
+`;
+
+exports[`flow memo 1`] = `
+"export const SomeComponent = memo(props => {
+  return null;
+});
+SomeComponent.___types = {
+  \\"kind\\": \\"generic\\",
+  \\"value\\": {
+    \\"kind\\": \\"object\\",
+    \\"members\\": [{
+      \\"kind\\": \\"property\\",
+      \\"key\\": {
+        \\"kind\\": \\"id\\",
+        \\"name\\": \\"wow\\"
+      },
+      \\"value\\": {
+        \\"kind\\": \\"boolean\\"
+      },
+      \\"optional\\": false,
+      \\"leadingComments\\": [{
+        \\"type\\": \\"commentBlock\\",
+        \\"value\\": \\"this does something\\",
+        \\"raw\\": \\"* this does something \\"
+      }]
+    }],
+    \\"leadingComments\\": [{
+      \\"type\\": \\"commentLine\\",
+      \\"value\\": \\"@flow\\",
+      \\"raw\\": \\" @flow\\"
+    }],
+    \\"referenceIdName\\": \\"Props\\"
+  },
+  \\"name\\": {
+    \\"kind\\": \\"id\\",
+    \\"name\\": \\"SomeComponent\\",
+    \\"type\\": null
+  }
+};"
+`;

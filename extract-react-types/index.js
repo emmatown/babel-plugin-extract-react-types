@@ -22,17 +22,27 @@ const { sync: resolveSync } = require("resolve");
 const matchExported = require("./matchExported");
 const converters = {};
 
-const isArrowFunctionComponent = path =>
-  path.isArrowFunctionExpression() ||
-  (path.isVariableDeclarator() && path.get("init").isArrowFunctionExpression());
-
-const isFunctionComponent = path => {
-  return path.isFunctionDeclaration();
+const isParentSpecialReactComponentType = (
+  path,
+  type /*:'memo' | 'forwardRef'*/
+) => {
+  return isSpecialReactComponentType(path.parentPath, type);
 };
 
-exports.isReactComponentFunction = function isReactComponentFunction(path) {
-  return isArrowFunctionComponent(path) || isFunctionComponent(path);
+const isSpecialReactComponentType = (path, type /*:'memo' | 'forwardRef'*/) => {
+  if (path && path.isCallExpression()) {
+    const callee = path.get("callee");
+    if (callee.isIdentifier() && callee.node.name === type) {
+      return true;
+    }
+    if (callee.isMemberExpression() && callee.matchesPattern(`React.${type}`)) {
+      return true;
+    }
+  }
+  return false;
 };
+
+exports.isParentSpecialReactComponentType = isParentSpecialReactComponentType;
 
 const getPropFromObject = (props, property) => {
   let prop;
@@ -144,25 +154,57 @@ converters.Program = (path, context) /*: K.Program*/ => {
   path.traverse({
     ExportDefaultDeclaration(exportPath) {
       if (exportPath.get("declaration").isIdentifier()) {
+        const declarationName = exportPath.get("declaration").node.name;
+
         const isDefaultExport = path =>
-          path.get("id").node &&
-          path.get("id").node.name === exportPath.get("declaration").node.name;
+          path.get("id").node && path.get("id").node.name === declarationName;
+
+        const isParentVariableDeclaratorDefaultExport = path => {
+          const isParentVariableDeclarator = path.parentPath.isVariableDeclarator();
+          if (isParentVariableDeclarator) {
+            return isDefaultExport(path.parentPath);
+          }
+        };
+
         path.traverse({
-          "FunctionDeclaration|ArrowFunctionExpression"(functionPath) {
-            if (
-              isDefaultExport(functionPath) &&
-              isReactComponentFunction(functionPath)
-            ) {
+          FunctionDeclaration(functionPath) {
+            if (isDefaultExport(functionPath)) {
               componentPath = functionPath;
             }
           },
-          VariableDeclaration(variablePath) {
-            const declaration = variablePath.get("declarations.0");
-            if (
-              isDefaultExport(declaration) &&
-              isReactComponentFunction(declaration)
-            ) {
-              componentPath = declaration.get("init");
+          "FunctionExpression|ArrowFunctionExpression"(functionPath) {
+            if (isParentVariableDeclaratorDefaultExport(functionPath)) {
+              componentPath = functionPath;
+            } else {
+              const isParentForwardRef = isParentSpecialReactComponentType(
+                functionPath,
+                "forwardRef"
+              );
+              const isParentForwardRefOrMemo =
+                isParentForwardRef ||
+                isParentSpecialReactComponentType(functionPath, "memo");
+
+              // check for React.forwardRef(() => {}) and React.memo(() => {})
+              if (
+                isParentForwardRefOrMemo &&
+                isParentVariableDeclaratorDefaultExport(functionPath.parentPath)
+              ) {
+                componentPath = functionPath;
+                return;
+              }
+              // check for React.memo(React.forwardRef(() => {}))
+              if (
+                isParentForwardRef &&
+                isParentSpecialReactComponentType(
+                  functionPath.parentPath,
+                  "memo"
+                ) &&
+                isParentVariableDeclaratorDefaultExport(
+                  functionPath.parentPath.parentPath
+                )
+              ) {
+                componentPath = functionPath;
+              }
             }
           },
           ClassDeclaration(classPath) {
@@ -181,8 +223,10 @@ converters.Program = (path, context) /*: K.Program*/ => {
               componentPath = classPath;
             }
           },
-          "FunctionDeclaration|ArrowFunctionExpression"(functionPath) {
-            if (!componentPath && isReactComponentFunction(functionPath)) {
+          "FunctionDeclaration|ArrowFunctionExpression|FunctionExpression"(
+            functionPath
+          ) {
+            if (!componentPath) {
               componentPath = functionPath;
             }
           }
@@ -214,10 +258,7 @@ converters.Program = (path, context) /*: K.Program*/ => {
   return { kind: "program", component };
 };
 
-exports.convertReactComponentFunction = function convertReactComponentFunction(
-  path,
-  context
-) {
+function convertReactComponentFunction(path, context) {
   // we have a function, assume the props are the first parameter
   let propType = path.get("params.0.typeAnnotation");
   let functionProperties = convert(propType, {
@@ -227,17 +268,19 @@ exports.convertReactComponentFunction = function convertReactComponentFunction(
 
   let name = "";
   if (
-    path.type === "ArrowFunctionExpression" &&
-    path.parent &&
-    path.parent.type === "VariableDeclarator"
-  ) {
-    name = path.parent.id.name;
-  } else if (
     path.type === "FunctionDeclaration" &&
     path.node.id &&
     path.node.id.name
   ) {
     name = path.node.id.name;
+  } else {
+    const variableDeclarator = path.findParent(path =>
+      path.isVariableDeclarator()
+    );
+
+    if (variableDeclarator) {
+      name = variableDeclarator.node.id.name;
+    }
   }
 
   let defaultProps = [];
@@ -256,10 +299,15 @@ exports.convertReactComponentFunction = function convertReactComponentFunction(
         }
       }
     });
+    functionProperties.name = {
+      kind: "id",
+      name,
+      type: null
+    };
   }
 
   return addDefaultProps(functionProperties, defaultProps);
-};
+}
 
 function addDefaultProps(props, defaultProps) {
   defaultProps.forEach(property => {
@@ -279,10 +327,7 @@ function addDefaultProps(props, defaultProps) {
   return props;
 }
 
-exports.convertReactComponentClass = function convertReactComponentClass(
-  path,
-  context
-) {
+function convertReactComponentClass(path, context) {
   let params = path.get("superTypeParameters").get("params");
   let props = params[0];
   let defaultProps = getDefaultProps(path, context);
@@ -293,7 +338,7 @@ exports.convertReactComponentClass = function convertReactComponentClass(
     mode: "value"
   });
   return addDefaultProps(classProperties, defaultProps);
-};
+}
 
 converters.TaggedTemplateExpression = (
   path,
@@ -1515,7 +1560,7 @@ function convert(path, context) {
   return result;
 }
 
-exports.getContext = function extractReactTypes(
+function getContext(
   typeSystem /*: 'flow' | 'typescript' */,
   filename /*:? string */,
   resolveOptions /*:? Object */
@@ -1546,4 +1591,153 @@ exports.getContext = function extractReactTypes(
   });
 
   return { resolveOptions, parserOpts };
+}
+
+function extractReactTypes(
+  code /*: string */,
+  typeSystem /*: 'flow' | 'typescript' */,
+  filename /*:? string */,
+  inputResolveOptions /*:? Object */
+) {
+  let { resolveOptions, parserOpts } = getContext(
+    typeSystem,
+    filename,
+    inputResolveOptions
+  );
+
+  let file = createBabelFile(code, { parserOpts, filename });
+  return convert(file.path, { resolveOptions, parserOpts });
+}
+
+module.exports = extractReactTypes;
+
+function findExports(path) /*: Array<{ name: string | null, path: any }> */ {
+  let moduleExports = path.get("body").filter(
+    bodyPath =>
+      // we only check for named and default exports here, we don't want export all
+      (bodyPath.isExportNamedDeclaration() &&
+        bodyPath.node.source === null &&
+        bodyPath.node.exportKind === "value") ||
+      bodyPath.isExportDefaultDeclaration()
+  );
+
+  let formattedExports = [];
+
+  moduleExports.forEach(exportPath => {
+    if (exportPath.isExportDefaultDeclaration()) {
+      let declaration = exportPath.get("declaration");
+      if (declaration.isIdentifier()) {
+        let binding = path.scope.bindings[declaration.node.name].path;
+        if (binding.isVariableDeclarator()) {
+          binding = binding.get("init");
+        }
+        formattedExports.push({
+          name: declaration.node.name,
+          path: binding
+        });
+      } else {
+        let name = null;
+        if (
+          (declaration.isClassDeclaration() ||
+            declaration.isFunctionDeclaration()) &&
+          declaration.node.id !== null
+        ) {
+          name = declaration.node.id.name;
+        }
+        formattedExports.push({ name, path: declaration });
+      }
+    } else {
+      let declaration = exportPath.get("declaration");
+      let specifiers = exportPath.get("specifiers");
+      if (specifiers.length === 0) {
+        if (
+          declaration.isFunctionDeclaration() ||
+          declaration.isClassDeclaration()
+        ) {
+          let identifier = declaration.node.id;
+          formattedExports.push({
+            name: identifier === null ? null : identifier.name,
+            path: declaration
+          });
+        }
+        if (declaration.isVariableDeclaration()) {
+          declaration.get("declarations").forEach(declarator => {
+            formattedExports.push({
+              name: declarator.node.id.name,
+              path: declarator.get("init")
+            });
+          });
+        }
+      } else {
+        specifiers.forEach(specifier => {
+          let name = specifier.node.local.name;
+          let binding = path.scope.bindings[name].path;
+          if (binding.isVariableDeclarator()) {
+            binding = binding.get("init");
+          }
+          formattedExports.push({
+            name,
+            path: binding
+          });
+        });
+      }
+    }
+  });
+  return formattedExports;
+}
+
+module.exports.findExportedComponents = function findExportedComponents(
+  programPath /*: any */,
+  typeSystem /*: 'flow' | 'typescript' */,
+  filename /*:? string */,
+  resolveOptions /*:? Object */
+) {
+  let context = getContext(typeSystem, filename, resolveOptions);
+  let components = [];
+  let exportPaths = findExports(programPath);
+  exportPaths.forEach(({ path, name }) => {
+    if (
+      path.isFunctionExpression() ||
+      path.isArrowFunctionExpression() ||
+      path.isFunctionDeclaration()
+    ) {
+      let component = convertReactComponentFunction(path, context);
+      components.push({ name, path, component });
+      return;
+    }
+    if (path.isClass()) {
+      let component = convertReactComponentClass(path, context);
+      components.push({ name, path, component });
+      return;
+    }
+    let isMemo = isSpecialReactComponentType(path, "memo");
+    if (isMemo || isSpecialReactComponentType(path, "forwardRef")) {
+      let firstArg = path.get("arguments")[0];
+      if (firstArg) {
+        if (
+          firstArg.isFunctionExpression() ||
+          firstArg.isArrowFunctionExpression()
+        ) {
+          let component = convertReactComponentFunction(firstArg, context);
+          components.push({ name, path, component });
+          return;
+        }
+        if (isMemo && isSpecialReactComponentType(firstArg, "forwardRef")) {
+          let innerFirstArg = firstArg.get("arguments")[0];
+          if (
+            innerFirstArg.isFunctionExpression() ||
+            innerFirstArg.isArrowFunctionExpression()
+          ) {
+            let component = convertReactComponentFunction(
+              innerFirstArg,
+              context
+            );
+            components.push({ name, path, component });
+            return;
+          }
+        }
+      }
+    }
+  });
+  return components;
 };
