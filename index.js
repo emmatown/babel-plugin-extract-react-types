@@ -12,7 +12,6 @@ module.exports = babel => {
           let components = findExportedComponents(
             programPath,
             "flow",
-            "exported",
             state.file.filename
           );
           components.forEach(({ name, component }) => {
