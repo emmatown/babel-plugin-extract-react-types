@@ -148,111 +148,22 @@ const getDefaultProps = (path, context) => {
 
 // This is the entry point. Program will only be found once.
 converters.Program = (path, context) /*: K.Program*/ => {
-  let componentPath;
-
-  // try figure out what the default export is
-  path.traverse({
-    ExportDefaultDeclaration(exportPath) {
-      if (exportPath.get("declaration").isIdentifier()) {
-        const declarationName = exportPath.get("declaration").node.name;
-
-        const isDefaultExport = path =>
-          path.get("id").node && path.get("id").node.name === declarationName;
-
-        const isParentVariableDeclaratorDefaultExport = path => {
-          const isParentVariableDeclarator = path.parentPath.isVariableDeclarator();
-          if (isParentVariableDeclarator) {
-            return isDefaultExport(path.parentPath);
-          }
-        };
-
-        path.traverse({
-          FunctionDeclaration(functionPath) {
-            if (isDefaultExport(functionPath)) {
-              componentPath = functionPath;
-            }
-          },
-          "FunctionExpression|ArrowFunctionExpression"(functionPath) {
-            if (isParentVariableDeclaratorDefaultExport(functionPath)) {
-              componentPath = functionPath;
-            } else {
-              const isParentForwardRef = isParentSpecialReactComponentType(
-                functionPath,
-                "forwardRef"
-              );
-              const isParentForwardRefOrMemo =
-                isParentForwardRef ||
-                isParentSpecialReactComponentType(functionPath, "memo");
-
-              // check for React.forwardRef(() => {}) and React.memo(() => {})
-              if (
-                isParentForwardRefOrMemo &&
-                isParentVariableDeclaratorDefaultExport(functionPath.parentPath)
-              ) {
-                componentPath = functionPath;
-                return;
-              }
-              // check for React.memo(React.forwardRef(() => {}))
-              if (
-                isParentForwardRef &&
-                isParentSpecialReactComponentType(
-                  functionPath.parentPath,
-                  "memo"
-                ) &&
-                isParentVariableDeclaratorDefaultExport(
-                  functionPath.parentPath.parentPath
-                )
-              ) {
-                componentPath = functionPath;
-              }
-            }
-          },
-          ClassDeclaration(classPath) {
-            if (
-              isDefaultExport(classPath) &&
-              isReactComponentClass(classPath)
-            ) {
-              componentPath = classPath;
-            }
-          }
-        });
-      } else {
-        exportPath.traverse({
-          ClassDeclaration(classPath) {
-            if (!componentPath && isReactComponentClass(classPath)) {
-              componentPath = classPath;
-            }
-          },
-          "FunctionDeclaration|ArrowFunctionExpression|FunctionExpression"(
-            functionPath
-          ) {
-            if (!componentPath) {
-              componentPath = functionPath;
-            }
-          }
-        });
-      }
-    }
-  });
+  let components = findExportedComponents(path, "default", context);
+  // components[0] could be undefined
+  let component;
+  if (components[0]) {
+    component = components[0].component;
+  }
 
   // just extract the props from the first class in the file
-  if (!componentPath) {
+  if (!component) {
     path.traverse({
       ClassDeclaration(path) {
-        if (!componentPath && isReactComponentClass(path)) {
-          componentPath = path;
+        if (!component && isReactComponentClass(path)) {
+          component = convertReactComponentClass(path, context);
         }
       }
     });
-  }
-
-  let component;
-  if (componentPath) {
-    if (componentPath.type === "ClassDeclaration") {
-      component = convertReactComponentClass(componentPath, context);
-    } else {
-      component = convertReactComponentFunction(componentPath, context);
-    }
   }
 
   return { kind: "program", component };
@@ -1686,13 +1597,11 @@ function findExports(path) /*: Array<{ name: string | null, path: any }> */ {
   return formattedExports;
 }
 
-module.exports.findExportedComponents = function findExportedComponents(
-  programPath /*: any */,
-  typeSystem /*: 'flow' | 'typescript' */,
-  filename /*:? string */,
-  resolveOptions /*:? Object */
+function findExportedComponents(
+  programPath,
+  componentsToFind /*: 'all' | 'default' */,
+  context
 ) {
-  let context = getContext(typeSystem, filename, resolveOptions);
   let components = [];
   let exportPaths = findExports(programPath);
   exportPaths.forEach(({ path, name }) => {
@@ -1740,4 +1649,17 @@ module.exports.findExportedComponents = function findExportedComponents(
     }
   });
   return components;
+}
+
+module.exports.findExportedComponents = (
+  programPath /*: any */,
+  typeSystem /*: 'flow' | 'typescript' */,
+  filename /*:? string */,
+  resolveOptions /*:? Object */
+) => {
+  return findExportedComponents(
+    programPath,
+    "all",
+    getContext(typeSystem, filename, resolveOptions)
+  );
 };
